@@ -976,6 +976,7 @@ CMSAttribute._oid_specs = {
     'content_type': SetOfContentType,
     'message_digest': SetOfOctetString,
     'signing_time': SetOfTime,
+    'smime_capabilities': OctetString,
     'counter_signature': SignerInfos,
     'signature_time_stamp_token': SetOfContentInfo,
     'cms_algorithm_protection': SetOfCMSAlgorithmProtection,
