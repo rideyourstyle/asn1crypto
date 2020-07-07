@@ -137,6 +137,28 @@ class ContentType(ObjectIdentifier):
         '1.2.840.113549.1.9.16.1.9': 'compressed_data',
         '1.2.840.113549.1.9.16.1.23': 'authenticated_enveloped_data',
     }
+    
+class SMIMEOid(ObjectIdentifier):
+    _map = {
+        '2.16.840.1.101.3.4.1.42': 'aes256-CBC'
+    }
+
+class SMIMECapability(Sequence):
+    _fields = [
+        ('oid', SMIMEOid)
+    ]
+
+class SequenceOfSMIMECapability(SequenceOf):
+    _child_spec = SMIMECapability
+
+
+class SetOfSMIMECapabilities(SetOf):
+    _child_spec = SequenceOfSMIMECapability
+
+
+class SMIMECapabilities(SetOfSMIMECapabilities):
+    _child_spec = SequenceOfSMIMECapability
+
 
 
 class CMSAlgorithmProtection(Sequence):
@@ -927,12 +949,12 @@ class CompressedData(Sequence):
         return self._decompressed
 
 
-class RecipientKeyIdentifier(Sequence):
-    _fields = [
-        ('subjectKeyIdentifier', OctetString),
-        ('date', GeneralizedTime, {'optional': True}),
-        ('other', OtherKeyAttribute, {'optional': True}),
-    ]
+# class RecipientKeyIdentifier(Sequence):
+#     _fields = [
+#         ('subjectKeyIdentifier', OctetString),
+#         ('date', GeneralizedTime, {'optional': True}),
+#         ('other', OtherKeyAttribute, {'optional': True}),
+#     ]
 
 
 class SMIMEEncryptionKeyPreference(Choice):
@@ -976,7 +998,7 @@ CMSAttribute._oid_specs = {
     'content_type': SetOfContentType,
     'message_digest': SetOfOctetString,
     'signing_time': SetOfTime,
-    'smime_capabilities': OctetString,
+    'smime_capabilities': SetOfSMIMECapabilities,
     'counter_signature': SignerInfos,
     'signature_time_stamp_token': SetOfContentInfo,
     'cms_algorithm_protection': SetOfCMSAlgorithmProtection,
@@ -984,3 +1006,5 @@ CMSAttribute._oid_specs = {
     'microsoft_time_stamp_token': SetOfContentInfo,
     'encrypt_key_pref': SMIMEEncryptionKeyPreferences,
 }
+
+
