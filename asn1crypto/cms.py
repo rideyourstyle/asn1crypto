@@ -137,16 +137,25 @@ class ContentType(ObjectIdentifier):
         '1.2.840.113549.1.9.16.1.9': 'compressed_data',
         '1.2.840.113549.1.9.16.1.23': 'authenticated_enveloped_data',
     }
-    
+
+
 class SMIMEOid(ObjectIdentifier):
     _map = {
-        '2.16.840.1.101.3.4.1.42': 'aes256-CBC'
+        '2.16.840.1.101.3.4.1.42': 'aes256-CBC',
+        '2.16.840.1.101.3.4.1.22': 'aes192-CBC',
+        '2.16.840.1.101.3.4.1.2':  'aes128-CBC',
+        '1.2.840.113549.3.7':      'des-EDE3-CBC',
+        '1.2.840.113549.3.2':      'rc2CBC',
+        '1.3.14.3.2.7':            'desCBC',
     }
+
 
 class SMIMECapability(Sequence):
     _fields = [
-        ('oid', SMIMEOid)
+        ('type', SMIMEOid),
+        ('values', Integer, {'optional': True})
     ]
+
 
 class SequenceOfSMIMECapability(SequenceOf):
     _child_spec = SMIMECapability
@@ -154,11 +163,6 @@ class SequenceOfSMIMECapability(SequenceOf):
 
 class SetOfSMIMECapabilities(SetOf):
     _child_spec = SequenceOfSMIMECapability
-
-
-class SMIMECapabilities(SetOfSMIMECapabilities):
-    _child_spec = SequenceOfSMIMECapability
-
 
 
 class CMSAlgorithmProtection(Sequence):
